@@ -38,6 +38,24 @@ impl Orientation {
             Orientation::Right => "right",
         }
     }
+
+    pub fn rotate_clockwise(self) -> Self {
+        match self {
+            Orientation::Normal => Orientation::Right,
+            Orientation::Left => Orientation::Normal,
+            Orientation::Inverted => Orientation::Left,
+            Orientation::Right => Orientation::Inverted,
+        }
+    }
+
+    pub fn rotate_counter_clockwise(self) -> Self {
+        match self {
+            Orientation::Normal => Orientation::Left,
+            Orientation::Left => Orientation::Inverted,
+            Orientation::Inverted => Orientation::Right,
+            Orientation::Right => Orientation::Normal,
+        }
+    }
 }
 
 #[derive(Debug)]
