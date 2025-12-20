@@ -1,9 +1,9 @@
 use anyhow::{Result, anyhow};
 
-use crate::{k_screen_doctor_cmd_builder::CmdBuilder, output::Orientation};
+use crate::{ksd_cmd_builder::ksd_set_orientation, output::Orientation};
 
 pub fn rotate_screen(name: &str, orientation: Orientation) -> Result<()> {
-    let mut cmd = CmdBuilder::set_orientation(name, orientation);
+    let mut cmd = ksd_set_orientation(name, orientation);
 
     let cmd_out = cmd
         .output()

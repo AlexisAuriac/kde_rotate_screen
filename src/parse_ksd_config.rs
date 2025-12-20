@@ -5,7 +5,7 @@ use serde::Deserialize;
 
 // unused properties are commented
 #[derive(Deserialize)]
-pub struct KScreenDoctorOutput {
+pub struct KSDOutput {
     // brightness
     // clones
     // connected
@@ -37,15 +37,15 @@ pub struct KScreenDoctorOutput {
 
 // unused properties are commented
 #[derive(Deserialize)]
-pub struct KScreenDoctorConfig {
+pub struct KSDConfig {
     // features
-    pub outputs: Vec<KScreenDoctorOutput>,
+    pub outputs: Vec<KSDOutput>,
     // screen
     // tabletModeAvailable
     // tabletModeEngaged
 }
 
-pub fn parse_kscreen_doctor_config<R>(r: &mut R) -> Result<KScreenDoctorConfig>
+pub fn parse_ksd_config<R>(r: &mut R) -> Result<KSDConfig>
 where
     R: Read,
 {
@@ -372,7 +372,7 @@ mod tests {
     fn test_parse() -> Result<()> {
         let mut r = Cursor::new(EXAMPLE_CONFIG);
 
-        let cfg = parse_kscreen_doctor_config(&mut r)?;
+        let cfg = parse_ksd_config(&mut r)?;
 
         assert_eq!(1, cfg.outputs.len());
         let output = &cfg.outputs[0];

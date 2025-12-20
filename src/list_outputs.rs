@@ -3,13 +3,13 @@ use std::io::Cursor;
 use anyhow::{Result, anyhow};
 
 use crate::{
-    k_screen_doctor_cmd_builder::CmdBuilder,
+    ksd_cmd_builder::ksd_config_json,
     output::{Orientation, Output},
-    parse_kscreen_doctor_config,
+    parse_ksd_config::parse_ksd_config,
 };
 
 pub fn list_outputs() -> Result<Vec<Output>> {
-    let mut cmd = CmdBuilder::config_json();
+    let mut cmd = ksd_config_json();
 
     let out = cmd
         .output()
@@ -27,7 +27,7 @@ pub fn list_outputs() -> Result<Vec<Output>> {
         .map_err(|e| anyhow!("failed to get output list: `{:?}`: {}", cmd, e))?;
     let mut cursor = Cursor::new(&out);
 
-    let cfg = parse_kscreen_doctor_config(&mut cursor)?;
+    let cfg = parse_ksd_config(&mut cursor)?;
 
     let mut outputs = Vec::with_capacity(cfg.outputs.len());
     for output in cfg.outputs {

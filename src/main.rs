@@ -1,13 +1,12 @@
 use anyhow::{Result, anyhow};
 use list_outputs::list_outputs;
 use output::Orientation;
-use parse_kscreen_doctor_config::parse_kscreen_doctor_config;
 use rotate_screen::rotate_screen;
 
-mod k_screen_doctor_cmd_builder;
+mod ksd_cmd_builder;
 mod list_outputs;
 mod output;
-mod parse_kscreen_doctor_config;
+mod parse_ksd_config;
 mod rotate_screen;
 
 fn main() -> Result<()> {
