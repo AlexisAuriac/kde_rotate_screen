@@ -17,7 +17,7 @@ impl CmdBuilder {
         cmd.args([format!(
             "output.{}.rotation.{}",
             output,
-            &orientation.to_string()
+            orientation.to_str(),
         )]);
         cmd
     }

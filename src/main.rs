@@ -1,5 +1,4 @@
 use anyhow::{Result, anyhow};
-use k_screen_doctor_cmd_builder::CmdBuilder;
 use list_outputs::list_outputs;
 use output::Orientation;
 use parse_kscreen_doctor_config::parse_kscreen_doctor_config;

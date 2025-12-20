@@ -1,8 +1,7 @@
 use anyhow::{Result, anyhow};
 
 #[repr(u8)]
-#[derive(Debug, Clone, Copy, PartialEq, Eq, strum_macros::Display)]
-#[strum(serialize_all = "lowercase")]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Orientation {
     Normal = 1,
     Left = 2,
@@ -31,8 +30,13 @@ impl Orientation {
         }
     }
 
-    pub fn to_u8(self) -> u8 {
-        self as u8
+    pub fn to_str(self) -> &'static str {
+        match self {
+            Orientation::Normal => "normal",
+            Orientation::Left => "left",
+            Orientation::Inverted => "inverted",
+            Orientation::Right => "right",
+        }
     }
 }
 
