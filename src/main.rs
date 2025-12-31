@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use anyhow::{Result, anyhow};
 use clap::{Parser, Subcommand};
 use list_outputs::list_outputs;
@@ -18,8 +20,10 @@ pub enum Direction {
     CounterClockwise,
 }
 
-impl Direction {
-    pub fn try_from_str(s: &str) -> Result<Self> {
+impl FromStr for Direction {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
         match s {
             "clockwise" => Ok(Direction::Clockwise),
             "counter-clockwise" => Ok(Direction::CounterClockwise),
@@ -43,7 +47,7 @@ enum Command {
     Orient {
         #[arg(default_value = "normal")]
         /// orientation (normal, left, right, or inverted)
-        orientation: String,
+        orientation: Orientation,
         #[arg(short = 'o', long, default_value = None)]
         /// orientation (normal, left, right, or inverted)
         output: Option<String>,
@@ -52,7 +56,7 @@ enum Command {
     Rotate {
         #[arg(default_value = "clockwise")]
         /// direction (clockwise, counter-clockwise)
-        direction: String,
+        direction: Direction,
         #[arg(short = 'o', long, default_value = None)]
         /// orientation (normal, left, right, or inverted)
         output: Option<String>,
@@ -108,17 +112,15 @@ fn main() -> Result<()> {
             orientation,
             output: output_name,
         } => {
-            let orientation = Orientation::try_from_str(orientation)?;
             let output = select_output(&outputs, output_name)?;
 
             print_output(output);
-            rotate_screen(&output.name, orientation)?;
+            rotate_screen(&output.name, *orientation)?;
         }
         Command::Rotate {
             direction,
             output: output_name,
         } => {
-            let direction = Direction::try_from_str(direction)?;
             let output = select_output(&outputs, output_name)?;
 
             let orientation = match direction {

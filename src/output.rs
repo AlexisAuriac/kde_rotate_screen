@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use anyhow::{Result, anyhow};
 
 #[repr(u8)]
@@ -17,16 +19,6 @@ impl Orientation {
             _ if n == Orientation::Inverted as u8 => Ok(Orientation::Inverted),
             _ if n == Orientation::Right as u8 => Ok(Orientation::Right),
             _ => Err(anyhow!("invalid orientation number: {n}")),
-        }
-    }
-
-    pub fn try_from_str(s: &str) -> Result<Self> {
-        match s {
-            "normal" => Ok(Orientation::Normal),
-            "left" => Ok(Orientation::Left),
-            "inverted" => Ok(Orientation::Inverted),
-            "right" => Ok(Orientation::Right),
-            _ => Err(anyhow!("invalid orientation string: {s}")),
         }
     }
 
@@ -54,6 +46,20 @@ impl Orientation {
             Orientation::Left => Orientation::Inverted,
             Orientation::Inverted => Orientation::Right,
             Orientation::Right => Orientation::Normal,
+        }
+    }
+}
+
+impl FromStr for Orientation {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        match s {
+            "normal" => Ok(Orientation::Normal),
+            "left" => Ok(Orientation::Left),
+            "inverted" => Ok(Orientation::Inverted),
+            "right" => Ok(Orientation::Right),
+            _ => Err(anyhow!("invalid orientation string: {s}")),
         }
     }
 }
