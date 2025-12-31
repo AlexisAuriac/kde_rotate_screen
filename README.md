@@ -1,3 +1,9 @@
+# kde_screen_rotate
+
+Simple tool to rotate the screen, only works on kde.
+
+Ergonomic wrapper around `kscreen-doctor`.
+
 # install
 
 ```bash
