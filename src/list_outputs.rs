@@ -31,9 +31,23 @@ pub fn list_outputs() -> Result<Vec<Output>> {
 
     let mut outputs = Vec::with_capacity(cfg.outputs.len());
     for output in cfg.outputs {
+        let current_mode = output
+            .modes
+            .iter()
+            .find_map(|mode| {
+                if mode.id == output.current_mode_id {
+                    Some(mode.name.clone())
+                } else {
+                    None
+                }
+            })
+            .unwrap_or("invalid_mode".to_string());
+
         outputs.push(Output {
             name: output.name.clone(),
             orientation: Orientation::try_from_u8(output.rotation)?,
+            current_mode,
+            enabled: output.enabled,
         });
     }
 

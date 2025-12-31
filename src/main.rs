@@ -2,12 +2,14 @@ use anyhow::{Result, anyhow};
 use clap::{Parser, Subcommand};
 use list_outputs::list_outputs;
 use output::Orientation;
+use print_outputs::print_outputs;
 use rotate_screen::rotate_screen;
 
 mod ksd_cmd_builder;
 mod list_outputs;
 mod output;
 mod parse_ksd_config;
+mod print_outputs;
 mod rotate_screen;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -29,6 +31,8 @@ impl Direction {
 #[derive(Debug, Subcommand)]
 /// rotate your screen cli
 enum Command {
+    /// list outputs
+    Outputs,
     /// reset orientation
     Reset,
     /// set screen orientation
@@ -64,6 +68,10 @@ fn main() -> Result<()> {
     let output = &outputs[0];
 
     match &cli.command {
+        Command::Outputs => {
+            let outputs = list_outputs()?;
+            print_outputs(&outputs);
+        }
         Command::Reset => rotate_screen(&output.name, Orientation::Normal)?,
         Command::Orient { orientation } => {
             let orientation = Orientation::try_from_str(orientation)?;

@@ -58,8 +58,10 @@ impl Orientation {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Output {
     pub name: String,
     pub orientation: Orientation,
+    pub enabled: bool,
+    pub current_mode: String,
 }

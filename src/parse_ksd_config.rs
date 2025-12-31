@@ -5,20 +5,31 @@ use serde::Deserialize;
 
 // unused properties are commented
 #[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct KSDOutputMode {
+    pub id: String,
+    pub name: String,
+    // refreshRate
+    // size
+}
+
+// unused properties are commented
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct KSDOutput {
     // brightness
     // clones
     // connected
-    // currentModeId
+    pub current_mode_id: String,
     // edrPolicy
-    // enabled
+    pub enabled: bool,
     // followPreferredMode
     // hdr
     // iccProfilePath
     // icon
     // id
     // maxBpc
-    // modes
+    pub modes: Vec<KSDOutputMode>,
     pub name: String,
     // overscan
     // pos
@@ -37,6 +48,7 @@ pub struct KSDOutput {
 
 // unused properties are commented
 #[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct KSDConfig {
     // features
     pub outputs: Vec<KSDOutput>,
@@ -379,6 +391,11 @@ mod tests {
 
         assert_eq!("eDP-1", output.name);
         assert_eq!(1, output.rotation);
+        assert!(output.enabled);
+        assert_eq!("1", output.current_mode_id);
+        assert_eq!(27, output.modes.len());
+        assert_eq!("1", output.modes[0].id);
+        assert_eq!("2560x1600@300", output.modes[0].name);
 
         Ok(())
     }
