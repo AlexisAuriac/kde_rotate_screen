@@ -1,8 +1,8 @@
 use anyhow::{Result, anyhow};
 use clap::{Parser, Subcommand};
 use list_outputs::list_outputs;
-use output::Orientation;
-use print_outputs::print_outputs;
+use output::{Orientation, Output};
+use print_outputs::{print_output, print_outputs};
 use rotate_screen::rotate_screen;
 
 mod ksd_cmd_builder;
@@ -34,18 +34,28 @@ enum Command {
     /// list outputs
     Outputs,
     /// reset orientation
-    Reset,
+    Reset {
+        #[arg(short = 'o', long, default_value = None)]
+        /// orientation (normal, left, right, or inverted)
+        output: Option<String>,
+    },
     /// set screen orientation
     Orient {
         #[arg(default_value = "normal")]
         /// orientation (normal, left, right, or inverted)
         orientation: String,
+        #[arg(short = 'o', long, default_value = None)]
+        /// orientation (normal, left, right, or inverted)
+        output: Option<String>,
     },
     /// rotate the screen
     Rotate {
         #[arg(default_value = "clockwise")]
         /// direction (clockwise, counter-clockwise)
         direction: String,
+        #[arg(short = 'o', long, default_value = None)]
+        /// orientation (normal, left, right, or inverted)
+        output: Option<String>,
     },
 }
 
@@ -56,35 +66,67 @@ struct Cli {
     pub command: Command,
 }
 
+fn select_output<'a>(outputs: &'a [Output], name: &Option<String>) -> Result<&'a Output> {
+    if outputs.is_empty() {
+        return Err(anyhow!("no available outputs"));
+    }
+
+    let Some(name) = name else {
+        return Ok(&outputs[0]);
+    };
+
+    for output in outputs {
+        if &output.name == name {
+            return Ok(output);
+        }
+    }
+
+    Err(anyhow!("no outputs named {name}"))
+}
+
 fn main() -> Result<()> {
     let cli = Cli::parse();
 
     let outputs = list_outputs()?;
-    if outputs.len() != 1 {
-        return Err(anyhow!(
-            "don't know how to deal with more/less than 1 output"
-        ));
+    if outputs.is_empty() {
+        return Err(anyhow!("no available outputs"));
     }
-    let output = &outputs[0];
 
     match &cli.command {
         Command::Outputs => {
             let outputs = list_outputs()?;
             print_outputs(&outputs);
         }
-        Command::Reset => rotate_screen(&output.name, Orientation::Normal)?,
-        Command::Orient { orientation } => {
+        Command::Reset {
+            output: output_name,
+        } => {
+            let output = select_output(&outputs, output_name)?;
+            print_output(output);
+            rotate_screen(&output.name, Orientation::Normal)?
+        }
+        Command::Orient {
+            orientation,
+            output: output_name,
+        } => {
             let orientation = Orientation::try_from_str(orientation)?;
+            let output = select_output(&outputs, output_name)?;
 
+            print_output(output);
             rotate_screen(&output.name, orientation)?;
         }
-        Command::Rotate { direction } => {
+        Command::Rotate {
+            direction,
+            output: output_name,
+        } => {
             let direction = Direction::try_from_str(direction)?;
+            let output = select_output(&outputs, output_name)?;
+
             let orientation = match direction {
                 Direction::Clockwise => output.orientation.rotate_clockwise(),
                 Direction::CounterClockwise => output.orientation.rotate_counter_clockwise(),
             };
 
+            print_output(output);
             rotate_screen(&output.name, orientation)?;
         }
     }
