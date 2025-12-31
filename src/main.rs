@@ -14,7 +14,7 @@ mod parse_ksd_config;
 mod print_outputs;
 mod rotate_screen;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, clap::ValueEnum)]
 pub enum Direction {
     Clockwise,
     CounterClockwise,
@@ -45,8 +45,8 @@ enum Command {
     },
     /// set screen orientation
     Orient {
-        #[arg(default_value = "normal")]
-        /// orientation (normal, left, right, or inverted)
+        #[arg(value_enum, default_value_t = Orientation::Normal)]
+        /// orientation
         orientation: Orientation,
         #[arg(short = 'o', long, default_value = None)]
         /// orientation (normal, left, right, or inverted)
@@ -54,8 +54,8 @@ enum Command {
     },
     /// rotate the screen
     Rotate {
-        #[arg(default_value = "clockwise")]
-        /// direction (clockwise, counter-clockwise)
+        #[arg(value_enum, default_value_t = Direction::Clockwise)]
+        /// direction
         direction: Direction,
         #[arg(short = 'o', long, default_value = None)]
         /// orientation (normal, left, right, or inverted)

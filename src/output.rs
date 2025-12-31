@@ -3,7 +3,7 @@ use std::str::FromStr;
 use anyhow::{Result, anyhow};
 
 #[repr(u8)]
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, clap::ValueEnum)]
 pub enum Orientation {
     Normal = 1,
     Left = 2,
